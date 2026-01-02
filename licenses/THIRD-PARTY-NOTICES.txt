@@ -1,0 +1,180 @@
+﻿================================================================================
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+================================================================================
+
+ECLYPSE Security Manager includes third-party software components that are
+subject to their respective licenses. This file provides required notices and
+attribution for those components.
+
+================================================================================
+
+TABLE OF CONTENTS
+
+1. OpenSSL
+2. PowerShell
+3. License Texts
+
+================================================================================
+1. OPENSSL
+================================================================================
+
+This product includes software developed by the OpenSSL Project for use in
+the OpenSSL Toolkit (https://www.openssl.org/)
+
+Copyright Notice:
+  Copyright (c) 1998-2025 The OpenSSL Project
+  Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson
+  All rights reserved.
+
+License:
+  Apache License 2.0
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+Bundled Version:
+  OpenSSL 3.5.4 (September 30, 2025)
+
+Bundled Components:
+  Windows: openssl.exe, libcrypto-3-x64.dll, libssl-3-x64.dll
+  Linux: openssl, libssl.so.3, libcrypto.so.3
+
+Website:
+  https://www.openssl.org/
+
+Source Code:
+  https://github.com/openssl/openssl
+
+Full License Text:
+  See OPENSSL-LICENSE.txt in this directory, or visit:
+  https://github.com/openssl/openssl/blob/master/LICENSE.txt
+
+Modifications:
+  This product includes UNMODIFIED OpenSSL binaries.
+  No source code changes have been made.
+
+================================================================================
+2. POWERSHELL
+================================================================================
+
+This product includes PowerShell, which is distributed under the MIT License.
+
+Copyright Notice:
+  Copyright (c) Microsoft Corporation
+  All rights reserved.
+
+License:
+  MIT License
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+Bundled Version:
+  PowerShell 7.x (Linux AppImage only)
+  Note: Windows EXE uses system-installed PowerShell
+
+Website:
+  https://github.com/PowerShell/PowerShell
+
+Source Code:
+  https://github.com/PowerShell/PowerShell
+
+Full License Text:
+  See POWERSHELL-LICENSE.txt in this directory, or visit:
+  https://github.com/PowerShell/PowerShell/blob/master/LICENSE.txt
+
+Bundled Components (Linux AppImage):
+  - PowerShell 7+ runtime (~140 MB)
+  - .NET runtime libraries
+  - PowerShell modules and dependencies
+
+Modifications:
+  This product includes UNMODIFIED PowerShell binaries.
+  Linux AppImage bundles the complete PowerShell runtime for portability.
+
+================================================================================
+3. LICENSE TEXTS
+================================================================================
+
+Full license texts for the above components are included in this directory:
+
+  • OPENSSL-LICENSE.txt  - Apache License 2.0 (OpenSSL)
+  • POWERSHELL-LICENSE.txt - MIT License (PowerShell)
+
+Online references:
+  • Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0
+  • MIT License: https://opensource.org/licenses/MIT
+
+================================================================================
+ABOUT ECLYPSE SECURITY MANAGER
+================================================================================
+
+ECLYPSE Security Manager is a proprietary tool developed by:
+
+  Distech Controls - Advanced Technical Support
+  Created by: Robert Lastinger
+
+This tool is designed for certificate management and network operations on
+ECLYPSE building automation controllers.
+
+The above third-party components are used in accordance with their respective
+open-source licenses. This tool does not modify the source code of these
+components.
+
+For questions about ECLYPSE Security Manager:
+  Contact: Distech Controls Technical Support
+
+For questions about the bundled open-source components:
+  • OpenSSL: https://www.openssl.org/community/
+  • PowerShell: https://github.com/PowerShell/PowerShell/issues
+
+================================================================================
+COMPLIANCE STATEMENT
+================================================================================
+
+This software complies with the terms of the Apache License 2.0 and MIT License
+by including this attribution file and the full license texts.
+
+Distribution of this software, in source or binary form, must retain:
+  1. This THIRD-PARTY-NOTICES.txt file
+  2. The LICENSE.txt files for OpenSSL and PowerShell
+  3. Copyright notices for all included components
+
+No warranty is provided for the third-party components. They are provided
+"AS IS" without warranty of any kind, express or implied.
+
+================================================================================
+LAST UPDATED
+================================================================================
+
+Date: December 27, 20245
+ECLYPSE Security Manager Version: 6.9.237b
+Document Version: 1.0
+
+================================================================================
+END OF THIRD-PARTY NOTICES
+================================================================================
