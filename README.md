@@ -1,194 +1,971 @@
+Looking at your codebase, this is a **much more sophisticated tool** than the current README suggests. You've built a comprehensive enterprise-grade certificate management platform. Here's an enhanced README that properly reflects what you've created:
+
+---
+
 # ECLYPSE Security Manager
 
-**Advanced certificate management and network operations for ECLYPSE controllers**
+**Enterprise-grade certificate lifecycle management and network operations for ECLYPSE Building Automation Systems**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)]()
+[![PowerShell](https://img.shields.io/badge/PowerShell-7.0%2B-blue)]()
+[![OpenSSL](https://img.shields.io/badge/OpenSSL-3.x-green)]()
 
 ---
 
-## 🚀 Features
+## 🎯 What is This?
 
-- **🔐 Certificate Management**
-  - Generate and deploy X.509 certificates
-  - Multiple CA support
-  - Automated certificate lifecycle management
-  - Support for custom certificate fields and SANs
+ECLYPSE Security Manager is a **complete PKI and network management solution** designed specifically for Distech Controls ECLYPSE controllers in Building Automation Systems. It streamlines certificate lifecycle management, automates routine tasks, and provides enterprise-level security features for BAS environments ranging from single-site installations to large distributed deployments.
 
-- **🌐 Network Discovery**
-  - Automatic mDNS/Bonjour discovery
-  - IP range scanning
-  - Smart caching and validation
+**Built for:** System integrators, IT administrators, and support engineers managing ECLYPSE controllers
 
-- **💾 Backup Operations**
-  - Automated controller configuration backups
-  - Local and remote backup management
-  - Encrypted backup storage
-  - Retention policies
-
-- **📊 Reporting & Monitoring**
-  - Certificate inventory with expiration tracking
-  - Backup inventory and status
-  - CSV and HTML report generation
-
-- **⚙️ Cross-Platform**
-  - Windows: Native `.exe` with embedded OpenSSL
-  - Linux: Self-contained `.AppImage`
-  - Encrypted profile system for secure credential storage
+**Replaces:** Manual certificate generation, ad-hoc OpenSSL commands, spreadsheet-based controller tracking
 
 ---
 
-## 📦 Installation
+## ✨ Key Features
 
-### **Windows**
+### 🔐 **Advanced Certificate Management**
 
-1. **Download** the latest `.exe` from [Releases](../../releases)
-2. **Run** `ECLYPSE-Security-Manager-vX.X.XXXx.exe`
-3. **First run:** OpenSSL extracts automatically (~5-10 seconds)
-4. **Subsequent runs:** Instant
+- **Multi-CA Architecture:** Manage multiple Certificate Authorities simultaneously with intelligent selection
+- **Custom Certificate Builder:** 8-step wizard with full control over extensions, SANs, and key usage
+- **CSR Workflow:** Generate Certificate Signing Requests for external CA signing with automatic import matching
+- **16 Export Formats:** PKCS#12, PEM, DER, JKS, PKCS#8, and specialized formats (EC-Net/Niagara bundles)
+- **Certificate Templates:** Save and reuse certificate configurations
+- **Variable Expansion:** Batch generate certificates with patterns (`controller{+1}`, `device-{001}`)
+- **Expiration Tracking:** Automated monitoring with configurable warning periods
+
+### 🌐 **Intelligent Network Discovery**
+
+- **Hybrid mDNS:** Avahi (Linux), Bonjour (Windows), and native .NET fallback
+- **Smart Caching:** Skip validation for recently-scanned controllers (60-80% faster repeat scans)
+- **TCP Pre-Flight:** Filter dead IPs before HTTPS validation (saves 4.5s per dead IP)
+- **Parallel Scanning:** Configurable thread count (1-50 threads) with adaptive performance
+- **IPv6 Optimization:** Automatic adapter management with hybrid restoration
+- **Metadata Pre-Loading:** Batch API calls fetch backup/cert counts in parallel
+
+### 💾 **Comprehensive Backup System**
+
+- **Remote Backup Operations:**
+  - Create, download, and delete backups via controller API
+  - Granular selection: All/Latest/By-Age/By-Count/Specific
+  - Overwrite behavior control (skip existing vs force re-download)
+
+- **Local Backup Management:**
+  - Profile-based organization (`Backups/{Profile}/{Controller}/`)
+  - Optional AES-256 encryption with profile password
+  - Date-based filtering and bulk operations
+  - Automated retention policies
+
+- **Backup Dashboard:** Real-time status with coverage metrics and bar chart visualization
+
+### 👤 **Profile & Session Management**
+
+- **Encrypted Profiles:**
+  - AES-256-CBC with PBKDF2 key derivation (10,000 iterations)
+  - Per-profile password protection (separate from session credentials)
+  - Controller lists, CAs, jobs, and settings stored encrypted
+
+- **Profile Export/Import:**
+  - Portable encrypted packages with integrity validation
+  - HMAC-SHA256 signature + SHA256 per-file checksums
+  - Selective component inclusion (CAs, certificates, backups, job templates)
+  - Cross-profile security (re-encryption with target password)
+  - Comprehensive audit logging
+
+- **Session Management:**
+  - Configurable timeout with lock/logout actions
+  - Operation protection (suspend timeout during backups/scans)
+  - Warning countdown (2-minute alert before timeout)
+  - Inactivity tracking with automatic reset
+
+- **Profile Locking:**
+  - Multi-instance protection with stale detection
+  - Process ID tracking (crash recovery)
+  - Automatic lock file cleanup
+  - Override options for legitimate concurrent access
+
+### ⚙️ **Background Job System**
+
+- **Automated Execution:**
+  - Timer-based job execution (checks every minute)
+  - Sequential queue processing prevents conflicts
+  - Smart catch-up (missed jobs execute on restart)
+
+- **Job Types:**
+  - Remote Backup (download with advanced filters)
+  - Remote Backup Create (scheduled backup creation)
+  - Remote Backup Cleanup (age-based remote deletion)
+  - Local Cleanup (retention policy enforcement)
+  - Certificate Renewal (planned)
+  - Network Scan (planned)
+
+- **Scheduling Options:**
+  - Daily, Weekly, Monthly
+  - Hourly intervals
+  - Minute intervals (5-1440 min)
+  - Manual/on-demand
+
+- **Job Management:**
+  - Real-time dashboard with countdown timers
+  - Execution history with retention policies
+  - Enable/disable toggles
+  - Manual execution triggers
+
+### 🗂️ **Controller Management**
+
+- **Dashboard View:** Summary-first design for 100+ controller environments
+- **Per-Controller Credentials:** Override session credentials for specific controllers (encrypted)
+- **Metadata Caching:** Operation-aware cache with configurable TTL (10-60 minutes)
+- **Bulk Operations:** Filter-based actions (no backups, no CA, no certs, by age)
+- **Validation Tools:** Parallel connectivity testing with reachability reports
+
+### 📊 **Dual-Channel Modular Logging**
+
+- **Two Independent Channels:**
+  - File Output: Persistent log files (default: WARNING level)
+  - Console Output: Real-time display (default: ERROR level)
+
+- **Five Verbosity Levels:** ERROR < WARNING < INFO < DEBUG < TRACE
+- **Per-Module Overrides:** Separate verbosity for Scanning, Certificates, Backups, General
+- **Quick Presets:** Troubleshooting, Production, Development, Silent modes
+
+### 🔒 **Security Features**
+
+- **Licensing System:**
+  - Time-limited builds (30/60/90/180/365 day validity)
+  - Password-protected licenses
+  - CA-signed certificates with signature validation
+  - Embedded license PFX in compiled binaries
+  - Expiration enforcement with countdown warnings
+
+- **Credential Management:**
+  - 3-tier storage (session/profile/don't save)
+  - Certificate passwords cached for batch operations
+  - Controller credentials saved encrypted in profile
+  - Per-controller credential overrides
+
+- **Encryption:**
+  - Profile data: AES-256-CBC with PBKDF2
+  - Backup files: Optional AES-256 encryption
+  - Private keys: Always encrypted (AES-256 or PKCS#8)
+
+### 🚀 **Performance Optimizations**
+
+- **Parallel Operations:**
+  - RunspacePool-based multi-threading (configurable 1-50 threads)
+  - Batch API calls (75% faster than sequential)
+  - TCP pre-flight filtering (85-90% faster IP scans)
+  - Smart metadata caching (4-8x faster repeat scans)
+
+- **Windows Performance Tuning:**
+  - DefaultConnectionLimit=100 (unlocks true parallelism)
+  - Expect100Continue=false (prevents EXE connection drops)
+  - UseNagleAlgorithm=false (reduces latency)
+
+- **Memory Management:**
+  - Secure string bypasses for large file operations
+  - Direct binary encryption for backup files (no 64KB limits)
+  - Runspace disposal prevents memory leaks
+
+---
+
+## 📥 Download & Installation
+
+### **Windows (Compiled .exe)**
+
+1. **Download** the latest release:
+   ```
+   ECLYPSE-Security-Manager-vX.X.XXXb.exe
+   ```
+
+2. **First Run Setup:**
+   - Double-click to launch
+   - OpenSSL extracts to `%APPDATA%\EclypseManager\bin\` (one-time, 5-10 seconds)
+   - Subsequent runs are instant (uses cached binaries)
+
+3. **File Structure:**
+   ```
+   ECLYPSE-Security-Manager-vX.X.XXXb.exe
+   share/
+   ├── app-core.dat (encrypted application code)
+   └── openssl-binaries.dat (encrypted OpenSSL)
+
+   [On first run, extracts to:]
+   %APPDATA%\EclypseManager\bin\
+   ├── openssl.exe (~3.5 MB)
+   ├── libcrypto-3-x64.dll (~5.8 MB)
+   ├── libssl-3-x64.dll (~731 KB)
+   └── openssl.cnf
+   ```
+
+4. **Cleanup (Optional):**
+   ```
+   Settings → Diagnostics → (scroll down) → Remove OpenSSL Files
+   ```
 
 **Requirements:**
 - Windows 10/11 (x64 or ARM64)
-- No additional software needed
+- Administrator rights **ONLY** needed for IPv6 optimization (optional)
 
 ---
 
-### **Linux**
+### **Linux (Self-Contained .AppImage)**
 
-1. **Download** the latest `.AppImage` from [Releases](../../releases)
+1. **Download** the latest release:
+   ```bash
+   wget https://github.com/[REPO]/releases/download/[TAG]/ECLYPSE-Security-Manager-vX.X.XXXb.AppImage
+   ```
 
 2. **Make executable:**
    ```bash
-   chmod +x ECLYPSE-Security-Manager-vX.X.XXXx.AppImage
+   chmod +x ECLYPSE-Security-Manager-vX.X.XXXb.AppImage
    ```
 
 3. **Run:**
    ```bash
-   ./ECLYPSE-Security-Manager-vX.X.XXXx.AppImage
+   ./ECLYPSE-Security-Manager-vX.X.XXXb.AppImage
    ```
 
-4. **(Optional) Install Avahi for automatic discovery:**
+4. **Optional: Install Avahi for mDNS:**
    ```bash
-   # Fedora/RHEL:
+   # Fedora/RHEL/Rocky/CentOS:
    sudo dnf install avahi avahi-tools
-   
+
    # Ubuntu/Debian:
    sudo apt install avahi-daemon avahi-utils
    ```
 
+5. **Data Storage:**
+   ```
+   ~/.local/share/ECYSecurityManager/
+   ├── Profiles/ (encrypted profile data)
+   ├── CA/ (certificate authorities)
+   ├── Certificates/ (generated certificates)
+   ├── Backups/ (downloaded backups)
+   ├── Logs/ (session logs)
+   └── Config/ (application settings)
+   ```
+
 **Requirements:**
-- Most Linux distributions (Ubuntu, Debian, Fedora, etc.)
-- Fully self-contained (includes PowerShell + OpenSSL)
+- Most Linux distributions (Ubuntu 20.04+, Fedora 35+, etc.)
+- No additional dependencies
+- First run: ~5-10 seconds (FUSE mount + extraction)
+- Subsequent runs: Instant
 
 ---
 
-## 🔧 Quick Start
+## 🎮 Quick Start Guide
 
-1. **Launch** the application
-2. **Create or load a profile** (encrypted storage for your settings)
-3. **Scan your network** for ECLYPSE controllers (mDNS or IP range)
-4. **Generate a CA** (Certificate Authority) for signing
-5. **Create certificates** for your controllers
-6. **Deploy** certificates to controllers via API
+### **1. First Launch: Profile Setup**
 
-**Detailed guides:** See [docs/](docs/) folder
+**On first launch, you'll see a profile selection screen:**
 
----
+```
+Create New Profile:
+  • Encrypted with your password
+  • Stores your settings, CAs, controllers
+  • Survives application restarts
 
-## 🛠️ Building from Source
+OR
 
-> **Note:** Source code is in a separate private repository. This repo is for releases only.
-
-If you have access to the source repository:
-
-### **Prerequisites**
-
-**Windows:**
-- PowerShell 7.0+
-- PS2EXE module: `Install-Module ps2exe`
-
-**Linux:**
-- PowerShell 7.0+
-- OpenSSL 3.x
-- .NET SDK 8.0+
-
-### **Build Commands**
-
-```powershell
-# Navigate to project
-cd ECLYPSE-Security-Manager
-
-# Run build script
-pwsh build/ECY-Security-Manager-build-tools.ps1
+Use Temporary Profile:
+  • No password required
+  • Changes not saved
+  • Good for testing
 ```
 
-**Output:** `releases/vX.X.XXXx/[platform]/`
+**Best Practice:** Create a named profile unless you're just exploring.
 
 ---
 
-## 📖 Documentation
+### **2. Scan Your Network**
 
-- **[Installation Guide](docs/installation.md)** - Detailed setup instructions
-- **[Quick Start Guide](docs/quick-start.md)** - Get started in 5 minutes  
-- **[User Manual](docs/user-guide.md)** - Complete feature reference *(Coming soon)*
-- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions *(Coming soon)*
+**Option 1: mDNS Discovery (Automatic)**
 
----
+```
+Main Menu → [1] Scan Network → [2] mDNS Discovery
+  ✓ Auto-discovers ECLYPSE controllers on local subnet
+  ✓ Works with Avahi (Linux) or Bonjour (Windows)
+  ✓ Fast: Typically finds controllers in 20-30 seconds
+```
 
-## 📜 License
+**Option 2: IP Range Scan**
 
-**ECLYPSE Security Manager** is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+```
+Main Menu → [1] Scan Network → [1] IP Range
+  → Enter: 10.110.210.50-100
+  ✓ Validates each IP for ECLYPSE API
+  ✓ Parallel scanning (10-20 threads recommended)
+  ✓ TCP pre-flight filtering (skips dead IPs)
+```
 
-### Your Code
-- **License:** GPL v3
-- **Copyright:** © 2025 Distech Controls - Advanced Technical Support
-- **See:** [LICENSE](LICENSE) for full GPL v3 text
-
-### Bundled Third-Party Components
-
-This tool includes open-source components:
-
-| Component | License | Usage |
-|-----------|---------|-------|
-| OpenSSL 3.5.4 | Apache License 2.0 | Certificate generation and signing |
-| PowerShell 7.x (Linux) | MIT License | Linux AppImage runtime |
-| PS2EXE | MIT License | Windows EXE compilation |
-
-**Full Attribution:** [licenses/THIRD-PARTY-NOTICES.txt](licenses/THIRD-PARTY-NOTICES.txt)
-
-**Compliance:**
-- OpenSSL license included: `licenses/OPENSSL-LICENSE.txt`
-- PowerShell license included: `licenses/POWERSHELL-LICENSE.txt`
-- No source code modifications made to third-party components
+**Result:** Authenticated controllers added to session with metadata pre-loaded
 
 ---
 
-## 🤝 Support
+### **3. Generate Certificate Authority**
 
-**Created by:** Robert Lastinger / Distech Controls Advanced Technical Support
+```
+Main Menu → [4] Generate/Manage CA
+  → Follows 8-step wizard:
+     1. CA Name & Common Name
+     2. Configuration Mode (Defaults vs Custom)
+     3. CA Type & Constraints (Root vs Intermediate, Path Length)
+     4. Key Parameters (4096-bit recommended for CAs)
+     5. Subject Fields
+     6. SANs (optional for CAs)
+     7. Preview
+     8. Generation
 
-**For support:**
-- Check the [Issues](../../issues) tab for known problems
-- Review [documentation](docs/)
-- Contact Distech Controls Technical Support
+  ✓ Password-protected private key (AES-256)
+  ✓ Metadata saved for tracking
+  ✓ Template system for reuse
+```
 
----
-
-## 🔐 Security
-
-This tool handles sensitive credentials and certificates. Always:
-- ✅ Use strong profile passwords
-- ✅ Keep private keys secure
-- ✅ Review generated certificates before deployment
-- ✅ Use encrypted profile storage
-- ⚠️ Never commit passwords or private keys to version control
-
----
-
-## 🗺️ Roadmap
-
-See [CHANGELOG.md](CHANGELOG.md) for version history and upcoming features.
+**Best Practice:** Use 4096-bit keys for CAs, 10-20 year validity
 
 ---
 
-**Made with ⚡ by Distech Controls Advanced Technical Support**
+### **4. Generate Controller Certificates**
+
+**Quick Generate (Fast):**
+```
+Main Menu → [5] Generate Certificates → [1] Quick Generate
+  → Uses config defaults
+  → Select controllers
+  → Enter password once
+  → Batch generates all certificates
+  ✓ 2048-bit RSA, 1-year validity, BACnet SC extensions
+```
+
+**Custom Builder (Full Control):**
+```
+Main Menu → [5] Generate Certificates → [2] Custom Builder
+  → 8-step workflow:
+     1. Mode (Defaults vs Customize)
+     2. Signing (Local CA vs External CSR)
+     3. Targets (Single/List/Batch/Template)
+     4. Subject Fields
+     5. SANs (DNS, IP, Email)
+     6. Extended Key Usage (9 presets)
+     7. Final Preview
+     8. Generation
+
+  ✓ Variable expansion: {hostname}, {+1}, {001}
+  ✓ Batch generation with templates
+  ✓ Save as template for reuse
+```
+
+---
+
+### **5. Deploy Certificates**
+
+```
+Main Menu → [6] Deploy Certificates
+  → Select controllers (ALL or specific)
+  → Choose stores:
+     • user-trusted (CA certificates)
+     • user-keychain (server certificates)
+     • Both
+  → Auto-detects format compatibility:
+     • PS7: PKCS#12 (.pfx) - binary upload
+     • PS5.1/EXE: Combined PEM - text upload
+  → Batch deployment with progress
+  ✓ Smart CA detection (deploys matching CA automatically)
+  ✓ Per-controller credential support
+  ✓ Operation delay protection (prevents web interface conflicts)
+```
+
+---
+
+### **6. Schedule Automated Backups**
+
+```
+Main Menu → [14] Manage Jobs → [C] Create Job
+  → Job Type: Remote Backup - Download
+  → Schedule: Daily at 03:00
+  → Targets: All Controllers
+  → Options:
+     • Backup Selection: Latest per controller
+     • Encryption: Yes (profile password)
+     • Overwrite: Skip existing
+  ✓ Runs while application is open (15-second check interval)
+  ✓ Executes even when session is locked
+  ✓ History tracking with retention policies
+```
+
+---
+
+## 🏗️ Architecture Overview
+
+### **Security Architecture**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Profile Layer (AES-256 + PBKDF2)                           │
+│  • User password unlocks profile                            │
+│  • Contains: Config, Controllers, CAs, Credentials, Jobs    │
+│  • Separate password from certificate passwords             │
+└─────────────────────────────────────────────────────────────┘
+           ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Credential Layer (3-Tier Caching)                          │
+│  • Session: Memory only (cleared on exit)                   │
+│  • Profile: Encrypted with profile password                 │
+│  • Per-Controller: Override for specific controllers        │
+└─────────────────────────────────────────────────────────────┘
+           ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Certificate Layer (PKI Operations)                         │
+│  • CA Private Keys: AES-256 encrypted on disk               │
+│  • Controller Certs: PKCS#12 with user-defined password     │
+│  • CSRs: Private keys encrypted, auto-delete on import      │
+└─────────────────────────────────────────────────────────────┘
+           ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Transport Layer (HTTPS API)                                │
+│  • Self-signed cert bypass (global ServicePointManager)     │
+│  • Basic Auth over TLS 1.2/1.3                              │
+│  • 3-method fallback (Script/EXE/WebRequest compatibility)  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### **Data Flow: Network Scan with Metadata Pre-Load**
+
+```
+User: Main Menu → [1] Scan Network → [2] mDNS Discovery
+
+1. Adapter Selection (if IPv6 detected: optimize or continue)
+2. mDNS Discovery (Avahi/Bonjour, 10-20 seconds)
+   → Returns: 13 IP addresses
+
+3. Cache Recognition (NEW - 60-80% time savings)
+   → Check: 13 discovered vs 13 cached
+   → Result: 13 cached (skip validation), 0 new
+
+4. TCP Pre-Flight (if enabled, filters dead IPs)
+   → 500ms per IP, 50 parallel threads
+   → Result: 13 reachable, 0 filtered
+
+5. HTTPS Validation (3-method fallback, 5-second timeout)
+   → Parallel: 10 threads
+   → Result: 13 validated (or trusted from cache)
+
+6. Metadata Pre-Load (Batch API, if not Fast Scan mode)
+   → POST /api/rest/v2/batch (3 requests in 1 call)
+   → Parallel: 10 threads
+   → Fetches: Platform, Certificates, Backups
+   → Result: Instant dashboard views
+
+Total Time:
+  • First scan (cache cold): ~45-60 seconds
+  • Repeat scan (cache hot): ~7-12 seconds
+  • Fast scan mode: ~5-10 seconds (no metadata)
+```
+
+---
+
+## 🚢 Deployment Scenarios
+
+### **Single-Site Installation (1-20 Controllers)**
+
+```yaml
+Profile Setup:
+  • Name: "Site-Alpha-Production"
+  • CA: Single root CA (4096-bit, 10-year)
+  • Scan: mDNS discovery (automatic)
+  • Certificate Generation: Quick mode (uses defaults)
+  • Backup: Manual (before deployments)
+
+Workflow:
+  1. Scan network once
+  2. Generate CA once
+  3. Generate certificates (batch, 5 minutes)
+  4. Deploy (batch, 3 minutes)
+  5. Verify via inventory
+
+Time to Production: ~15 minutes
+```
+
+### **Multi-Site Enterprise (100+ Controllers)**
+
+```yaml
+Profile Setup:
+  • Name: "Enterprise-Central-Office"
+  • CAs: Multiple (one per site or function)
+  • Scan: Import CSV lists (pre-populated)
+  • Certificate Generation: Custom builder with templates
+  • Jobs: Automated nightly backups
+
+Workflow:
+  1. Import controller lists (CSV per site)
+  2. Generate CAs (one per site, save as templates)
+  3. Generate certificates (template-based, 30-minute batch)
+  4. Deploy in phases (site-by-site)
+  5. Schedule backup jobs (daily downloads)
+  6. Monitor via dashboards
+
+Features Used:
+  • Per-controller credentials (different admin passwords per site)
+  • Job system (nightly backups to central location)
+  • Metadata caching (instant dashboard refresh)
+  • Profile export (backup configuration to other machines)
+
+Time to Production: ~2-4 hours (initial setup), ~15 min/site (ongoing)
+```
+
+### **Service Provider / MSP (Multi-Customer)**
+
+```yaml
+Profile Structure:
+  • One profile per customer
+  • Isolated CAs, credentials, and settings
+  • Profile export for team sharing
+
+Example Profiles:
+  • "Customer-A-Main-Office"
+  • "Customer-B-Production"
+  • "Customer-C-Test-Environment"
+
+Workflow:
+  1. Create profile per customer
+  2. Import customer's controller list
+  3. Generate customer-specific CA
+  4. Deploy certificates
+  5. Export profile (encrypted) for team backup
+  6. Switch profiles as needed (no restart)
+
+Profile Security:
+  • Each profile has separate password
+  • Per-profile credential isolation
+  • Export packages encrypted with separate password
+  • Import re-encrypts with target profile password
+```
+
+---
+
+## 🔐 Security Best Practices
+
+### **Profile Management**
+
+```powershell
+DO:
+  ✓ Use strong profile passwords (8+ characters)
+  ✓ Export profiles periodically (Settings → Profile Management → Export)
+  ✓ Store exports in secure location (encrypted backup)
+  ✓ Use named profiles for production (not temporary)
+
+DON'T:
+  ✗ Share profile passwords via unencrypted channels
+  ✗ Use same password for profile and certificates
+  ✗ Disable session timeout in shared environments
+  ✗ Skip profile backups before major changes
+```
+
+### **Certificate Passwords**
+
+```powershell
+ENCRYPTION OPTIONS (Prompted during generation):
+  1. Session Only - Cleared on exit (good for one-time use)
+  2. Profile Storage - Reused next session (good for automation)
+  0. Don't Save - Re-enter every time (maximum security)
+
+RECOMMENDATION:
+  • Production CAs: Don't save (manual entry prevents unauthorized use)
+  • Controller certs: Save to profile (enables batch deployments)
+```
+
+### **Controller Credentials**
+
+```powershell
+DEFAULT BEHAVIOR:
+  • Single username/password for all controllers
+  • Saved encrypted in profile (opt-in)
+  • Reused across sessions
+
+OVERRIDE FOR SENSITIVE CONTROLLERS:
+  Controller Manager → Edit Controller → Set Custom Credentials
+  • CEO's controller: admin/special-password
+  • Server room controller: admin/different-password
+  • Default controllers: session credential
+```
+
+### **Backup Encryption**
+
+```powershell
+WHEN DOWNLOADING BACKUPS:
+  → Prompt: "Encrypt backups after download?"
+     • [N] No - Standard ZIP (fast, extractable anywhere)
+     • [Y] Yes - AES-256 encrypted (requires profile to decrypt)
+
+USE ENCRYPTION IF:
+  • Storing backups on shared drives
+  • Emailing backups to remote teams
+  • Compliance requires encrypted storage
+
+USE PLAIN ZIP IF:
+  • Backups stay on local machine
+  • Need to extract on systems without this tool
+```
+
+---
+
+## 📚 Advanced Features
+
+### **Opportunistic Cache Updates**
+
+Operations automatically update controller metadata **without user action**:
+
+```
+Backup Created → BackupCount++
+CA Deployed → CADeployStatus = true
+Cert Deployed → CertDeployStatus = true
+Delete Backup → BackupCount--
+```
+
+**Result:** Dashboard always shows current state without manual refresh
+
+### **Variable Expansion in Batch Operations**
+
+Generate 100 certificates with patterns:
+
+```powershell
+Pattern: floor-{001}-controller{+1}
+
+Expands to:
+  floor-001-controller1
+  floor-002-controller2
+  floor-003-controller3
+  ...
+  floor-100-controller100
+
+Supports:
+  {hostname}  - From controller list
+  {ip}        - Dots become dashes
+  {alias}     - Custom name from list
+  {+N}        - Increment by N
+  {NNN}       - Zero-padded sequence
+```
+
+### **Profile Export/Import Use Cases**
+
+**Scenario 1: Team Sharing**
+```
+Engineer A: Scans network, generates CAs
+Engineer A: Settings → Profile Management → Export Profile
+           → Includes: Config, Controllers, CAs, Credentials
+           → Creates: encrypted .zip package
+
+Engineer B: Import package, enters export password
+           → Result: Instant access to same environment
+```
+
+**Scenario 2: Disaster Recovery**
+```
+Before Update: Export profile (backup)
+After Update: Update causes issues?
+             → Import old profile
+             → Use archived old binary
+             → Back to working state
+```
+
+**Scenario 3: Machine Migration**
+```
+Old Laptop: Export profile
+New Laptop: Install app, import profile
+           → All settings, controllers, and CAs migrated
+           → No reconfiguration needed
+```
+
+---
+
+## 🔧 Configuration & Tuning
+
+### **Performance Settings**
+
+```
+Settings → ECLYPSE API Settings:
+  • Max Concurrent Threads: 10-50 (default: 10)
+    → Higher = faster, more network load
+    → Lower = slower, more reliable
+
+  • Timeout: 5-60 seconds (default: 30)
+    → Fast LAN: 5-10s
+    → Slow/Remote: 30-60s
+
+  • Operation Delay: 0-60 seconds (default: 5)
+    → Wait time after POST/DELETE operations
+    → Prevents stale reads from controller web UI
+
+  • TCP Pre-Flight: ON/OFF (default: ON)
+    → Filters dead IPs before HTTPS validation
+    → Saves 4.5 seconds per dead IP
+```
+
+### **Logging Configuration**
+
+```
+Settings → Configure Logging:
+  FILE CHANNEL (Persistent):
+    • Production: WARNING (captures issues)
+    • Development: INFO (operations visibility)
+    • Troubleshooting: DEBUG (technical details)
+    • Deep Debugging: TRACE (every step)
+
+  CONSOLE CHANNEL (Real-time):
+    • Production: ERROR (silent until problems)
+    • Development: WARNING (occasional cautions)
+    • Troubleshooting: INFO (progress messages)
+
+  PER-MODULE OVERRIDES:
+    • Scanning: DEBUG (diagnose network issues)
+    • Certificates: WARNING (keep others quiet)
+    • Backups: INFO (visibility)
+    • General: ERROR (default)
+```
+
+### **mDNS Discovery Settings**
+
+```
+Settings → Configure mDNS Discovery:
+  • Initial Stabilization: 5-15s (default: 10s)
+    → Wait after discovery before first auth attempt
+
+  • Retry Stabilization: 5-15s (default: 10s)
+    → Wait before retry after failed auth
+
+  • Max Retries: 0-3 (default: 1)
+    → Silent retry attempts for timing failures
+
+  • Max Threads: 1-20 (default: 3)
+    → Parallel auth threads
+    → Lower = more reliable (SSL race conditions)
+    → Higher = faster (but may lose some controllers)
+
+  • Cache Recognition: ON/OFF (default: ON)
+    → Skip validation for recently-scanned controllers
+    → 60-80% faster repeat scans
+
+  • Discovery Mode: 1x Fast vs 2x Thorough (default: 1x)
+    → Fast: Single browse+resolve pass (~25s)
+    → Thorough: Double passes with delays (~50s)
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### **Common Issues**
+
+**Issue:** "OpenSSL not found"
+```
+SYMPTOMS:
+  • Options 3-5 locked in main menu
+  • "LIMITED MODE" message on startup
+
+FIX:
+  Windows: Settings → Diagnostics → Check OpenSSL Status
+           → Shows winget command for installation
+
+  Linux:   sudo dnf install openssl openssl-devel  (Fedora/RHEL)
+           sudo apt install openssl libssl-dev      (Ubuntu/Debian)
+```
+
+**Issue:** "Authentication failures during mDNS"
+```
+SYMPTOMS:
+  • 10/13 controllers authenticate
+  • Others timeout or fail
+
+CAUSE: IPv6 causes SSL timing conflicts
+
+FIX (Option 1 - Automatic):
+  Scan → mDNS Enhanced → Disable IPv6 Temporarily
+  → Auto-restores after scan
+
+FIX (Option 2 - Manual):
+  Control Panel → Network Connections
+  → Right-click adapter → Properties
+  → UNCHECK "Internet Protocol Version 6 (TCP/IPv6)"
+```
+
+**Issue:** "Slow scans (60+ seconds for 13 controllers)"
+```
+SYMPTOMS:
+  • Each controller takes 5+ seconds
+  • Progress bar crawls
+
+CAUSES:
+  1. Low thread count (MaxConcurrentThreads = 1)
+  2. High timeout (Timeout = 60s)
+  3. Cache disabled (UseCachedControllers = false)
+
+FIX:
+  Settings → ECLYPSE API Settings:
+    • Max Concurrent Threads: 10-20 (increase)
+    • Timeout: 5-10 seconds (decrease for fast LANs)
+
+  Settings → Configure mDNS Discovery:
+    • Cache Recognition: ON (enable)
+```
+
+**Issue:** "Profile password incorrect"
+```
+SYMPTOMS:
+  • Profile selection → Enter password → Fails 3 times
+  • 10-second delay, returns to menu
+
+FIX (If you forgot password):
+  ✗ Cannot recover encrypted profile (by design)
+  ✓ Create new profile
+  ✓ OR: Use temporary profile
+  ✓ OR: Restore from profile export (if you have backup)
+
+FIX (If password is correct but fails):
+  → Check for leading/trailing spaces
+  → Password is case-sensitive
+  → Verify keyboard layout (QWERTY vs AZERTY)
+```
+
+**Issue:** "Downloaded file is 0 bytes" or "Download fails silently"
+```
+SYMPTOMS:
+  • Update download shows 0% progress
+  • File created but empty
+  • No error message
+
+CAUSE: GitHub redirects to Azure blob storage, WebClient doesn't follow
+
+FIX:
+  • Update will retry with Invoke-WebRequest automatically
+  • If both fail, try curl (Linux) or BITS (Windows)
+  • Manual download: Visit GitHub releases page
+```
+
+### **Performance Optimization**
+
+**For 300+ Controller Deployments:**
+
+```yaml
+Config Tuning:
+  MaxConcurrentThreads: 30-50 (aggressive)
+  Timeout: 5-10 seconds (fast LAN assumed)
+  OperationDelay: 2-3 seconds (balanced)
+  UseCachedControllers: true (essential)
+  UseTCPPreFlight: true (massive savings)
+
+Expected Performance:
+  • Initial scan: ~90 seconds (parallel validation + metadata)
+  • Repeat scan: ~15 seconds (cache hits + new controllers)
+  • Certificate generation: ~10-15 minutes (batch with 2s delay)
+  • Certificate deployment: ~8-12 minutes (batch with 3s delay)
+  • Backup download (latest per controller): ~45-60 minutes
+```
+
+**For Slow/Remote Networks:**
+
+```yaml
+Config Tuning:
+  MaxConcurrentThreads: 5-10 (conservative)
+  Timeout: 30-60 seconds (patient)
+  OperationDelay: 5-10 seconds (safe)
+  MaxRetries: 3 (thorough)
+
+Expected Performance:
+  • Operations slower but more reliable
+  • Fewer authentication failures
+  • Better for WAN/VPN connections
+```
+
+---
+
+
+## 🔄 Update System
+
+### **Check for Updates**
+
+```
+Settings → [15] Check for Updates
+  → Queries GitHub Releases API
+  → Compares semantic versions
+  → Shows release notes preview
+  → Offers one-click download
+```
+
+### **Download Process**
+
+```
+1. User: [D] Download Update
+2. System: Profile backup check
+   → If >24h since last export: Prompt for backup
+   → If recent export: Skip prompt (non-nagging)
+3. System: Download binary to ~/Downloads
+   → Progress bar with speed and ETA
+   → 3-method fallback (Invoke-WebRequest, BITS, curl)
+4. System: Show installation instructions
+   → Windows: Move new .exe to install folder
+   → Linux: Replace .AppImage file
+```
+
+---
+
+## 🌍 Localization
+
+**Supported Languages:**
+- English (en) - Default
+- Français (fr) - Partial
+- Deutsch (de) - Partial
+- Español (es) - Partial
+- Polski (pl) - Partial
+
+**Coverage:** ~120 translation keys (menus, prompts, status messages)
+
+**Change Language:**
+```
+Settings → Profile Management → Change Language
+  OR
+Create new profile → Select language during setup
+```
+
+---
+
+## 🤝 Contributing
+
+This is a **releases-only** repository. Source code is maintained in a separate private repository.
+
+**Report Issues:** Use the [Issues](../../issues) tab for bug reports or feature requests
+
+**Translations:** Contact the maintainer if you'd like to contribute language translations
+
+---
+
+## 📞 Support & Contact
+
+**Author:** Robert Lastinger
+**Company:** Distech Controls - Advanced Technical Support
+**Created For:** Internal support operations and advanced diagnostics
+
+**For Assistance:**
+- 📖 Check [documentation](docs/)
+- 🐛 Search [known issues](../../issues)
+- 📧 Contact Distech Controls Technical Support
+
+---
+
+## 🏆 Acknowledgments
+
+- **OpenSSL Project** - Certificate operations ([openssl.org](https://www.openssl.org/))
+- **PowerShell Team** - Cross-platform runtime ([github.com/PowerShell](https://github.com/PowerShell/PowerShell))
+- **PS2EXE Community** - Windows compilation ([github.com/MScholtes](https://github.com/MScholtes/PS2EXE))
+
+---
+
+**Version:** 6.16.378b
+**Last Updated:** 2025-01-02
+**Minimum PowerShell:** 7.0+
+**Supported Platforms:** Windows 10/11, Linux (most distributions)
+
+---
+
+Built with ⚡ by Distech Controls Advanced Technical Support
