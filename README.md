@@ -294,7 +294,7 @@ Download the latest release from the [Releases](../../releases) page.
 
 1. **Download** the latest release:
    ```bash
-   wget https://github.com/[REPO]/releases/download/v1.0.1/ECLYPSE-Security-Manager-v1.0.1.AppImage
+   wget https://github.com/LesserOfTwoWeevils/releases/download/v1.0.1/ECLYPSE-Security-Manager-v1.0.1.AppImage
    ```
 
 2. **Verify Download (Recommended):**
