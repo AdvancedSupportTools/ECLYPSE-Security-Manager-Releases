@@ -35,6 +35,22 @@ This application is:
 
 ---
 
+## 🔄 Semantic Versioning Adoption
+
+**Version Numbering Change:** v6.17.399b → v1.0.1
+
+We've transitioned from development versioning (6.x.x) to **semantic versioning** for clearer release communication:
+
+- **MAJOR** (1.x.x): Breaking changes requiring user action
+- **MINOR** (x.1.x): New features, backward compatible  
+- **PATCH** (x.x.1): Bug fixes and improvements
+
+**This is NOT a downgrade** - v1.0.1 is **NEWER** than v6.17.399b. The built-in update checker correctly detects this transition.
+
+**Upgrading from v6.17.x?** Your profiles are fully compatible. Just replace the executable/AppImage - no migration needed.
+
+---
+
 
 ## 🎯 What is This?
 
@@ -224,9 +240,9 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 
 ## 📥 Download & Installation
 
-### **Latest Release: v6.17.398b**
+### **Latest Release: v1.0.1**
 
-**⚠️ License Validity:** This build is valid until **April 4, 2026** (90 days from release)
+**⚠️ License Validity:** This build is valid until **April 6, 2026** (90 days from release)
 
 Download the latest release from the [Releases](../../releases) page.
 
@@ -234,13 +250,13 @@ Download the latest release from the [Releases](../../releases) page.
 
 1. **Download** the latest release:
    ```
-   ECLYPSE-Security-Manager-v6.17.398b.exe
+   ECLYPSE-Security-Manager-v1.0.1.exe
    ```
 
 2. **Verify Download (Recommended):**
    ```powershell
-   (Get-FileHash .\ECLYPSE-Security-Manager-v6.17.398b.exe -Algorithm SHA256).Hash
-   # Should match: 0638F9702AF0CEF4D857850CEDE1D3547B546B82AFCB946FFC0FF02DF848477F
+   (Get-FileHash .\ECLYPSE-Security-Manager-v1.0.1.exe -Algorithm SHA256).Hash
+   # Should match: D7BADFF5CAC4C4989E97627A5C65697C3910EB6713BF88887E4044ECC9BCF8D0
    ```
 
 3. **First Run Setup:**
@@ -250,7 +266,7 @@ Download the latest release from the [Releases](../../releases) page.
 
 4. **File Structure:**
    ```
-   ECLYPSE-Security-Manager-v6.17.398b.exe
+   ECLYPSE-Security-Manager-v1.0.1.exe
    share/
    ├── app-core.dat (encrypted application code)
    └── openssl-binaries.dat (encrypted OpenSSL)
@@ -278,23 +294,26 @@ Download the latest release from the [Releases](../../releases) page.
 
 1. **Download** the latest release:
    ```bash
-   wget https://github.com/[REPO]/releases/download/v6.17.398b/ECLYPSE-Security-Manager-v6.17.398b.AppImage
+   wget https://github.com/[REPO]/releases/download/v1.0.1/ECLYPSE-Security-Manager-v1.0.1.AppImage
    ```
 
 2. **Verify Download (Recommended):**
    ```bash
-   sha256sum ECLYPSE-Security-Manager-v6.17.398b.AppImage
-   # Should match: 65EABD485344B00A3359644BE5022DA597FF6C7FA0B3CB782FCC0902ABE8A1A9
+   sha256sum ECLYPSE-Security-Manager-v1.0.1.AppImage
+   # Should match: 2834A564D671C2100A08FFD6E31B4EA9B9E9163B3E6AA8D385AB0C254EE2FA39
+
+   # OR use the checksum file:
+   sha256sum -c ECLYPSE-Security-Manager-v1.0.1.AppImage.sha256
    ```
 
 3. **Make executable:**
    ```bash
-   chmod +x ECLYPSE-Security-Manager-v6.17.398b.AppImage
+   chmod +x ECLYPSE-Security-Manager-v1.0.1.AppImage
    ```
 
 4. **Run:**
    ```bash
-   ./ECLYPSE-Security-Manager-v6.17.398b.AppImage
+   ./ECLYPSE-Security-Manager-v1.0.1.AppImage
    ```
 
 5. **Optional: Install Avahi for mDNS:**
@@ -1079,11 +1098,12 @@ See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) for complete licensing in
 
 ## 📊 Project Information
 
-**Current Version:** v6.17.398b
-**Release Date:** January 5, 2026
-**License Validity:** 90 days (expires April 4, 2026)
+**Current Version:** v1.0.1
+**Versioning Scheme:** Semantic Versioning (MAJOR.MINOR.PATCH)
+**Release Date:** January 6, 2026
+**License Validity:** 90 days (expires April 6, 2026)
 **License:** GPL-3.0
-**Status:** Community Tool (First Official Release)
+**Status:** Community Tool - Stable Release
 **Minimum PowerShell:** 7.0+
 **Supported Platforms:** Windows 10/11, Linux (most distributions)
 
