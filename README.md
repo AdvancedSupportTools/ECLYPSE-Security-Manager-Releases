@@ -1,6 +1,3 @@
-
----
-
 # ECLYPSE Security Manager
 
 > ⚠️ **IMPORTANT: COMMUNITY TOOL - NOT AN OFFICIAL DISTECH CONTROLS PRODUCT**
@@ -37,20 +34,19 @@ This application is:
 
 ## 🔄 Semantic Versioning Adoption
 
-**Version Numbering Change:** v6.17.399b → v1.0.1
+**Version Numbering Change:** v6.17.399b → v1.0.1 → v1.0.7
 
 We've transitioned from development versioning (6.x.x) to **semantic versioning** for clearer release communication:
 
 - **MAJOR** (1.x.x): Breaking changes requiring user action
-- **MINOR** (x.1.x): New features, backward compatible  
+- **MINOR** (x.1.x): New features, backward compatible
 - **PATCH** (x.x.1): Bug fixes and improvements
 
-**This is NOT a downgrade** - v1.0.1 is **NEWER** than v6.17.399b. The built-in update checker correctly detects this transition.
+**This is NOT a downgrade** - v1.0.7 is **NEWER** than v6.17.399b and v1.0.1. The built-in update checker correctly detects these transitions.
 
-**Upgrading from v6.17.x?** Your profiles are fully compatible. Just replace the executable/AppImage - no migration needed.
+**Upgrading from v6.17.x or v1.0.1?** Your profiles are fully compatible. Just replace the executable/AppImage - no migration needed.
 
 ---
-
 
 ## 🎯 What is This?
 
@@ -89,9 +85,37 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 
 </details>
 
-
+---
 
 ## ✨ Key Features
+
+### 🌐 **Network Interface Management (NEW in v1.0.7)**
+
+- **View Interface Status:** Real-time IPv4/IPv6 configuration monitoring
+  - Bridge, primary, secondary interface support
+  - Operational status: Routable, Carrier, NoCarrier, Off
+  - IP address display with color-coded status indicators
+  - Bulk queries across all controllers
+
+- **Configure IPv4/IPv6 Settings:** Batch operations with enterprise reliability
+  - 6 action options: Enable/disable IPv4, IPv6, or both
+  - Multi-interface selection (comma-separated: "1,2" for primary+secondary)
+  - Typed confirmation for safety ("CONFIRM" required)
+  - Automatic verification scan after changes
+
+- **3-Pass Retry System:** Intelligent failure recovery
+  - Pass 1: Attempt all controllers
+  - Pass 2: Retry failures from Pass 1
+  - Pass 3: Final retry for persistent failures
+  - **Result:** 97-99% success rate vs 85-90% single-pass
+  - Silent retries with final summary (✓/✗ per controller)
+  - Real-time progress: `⚡ Pass 2 : 5/10 (50%) | controller-01 | ETA: 45s`
+
+- **Adaptive Network Integration:** Dynamic operation tuning
+  - Pre-operation network quality detection (5-sample latency test)
+  - Delay adjustment based on conditions (Excellent/Good/Fair/Poor/Critical)
+  - Automatic throttle increases on failures (reliability over speed)
+  - Live metrics: Avg latency, packet loss %, quality badge
 
 ### 🔐 **Advanced Certificate Management**
 
@@ -99,9 +123,11 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 - **Custom Certificate Builder:** 8-step wizard with full control over extensions, SANs, and key usage
 - **CSR Workflow:** Generate Certificate Signing Requests for external CA signing with automatic import matching
 - **16 Export Formats:** PKCS#12, PEM, DER, JKS, PKCS#8, and specialized formats (EC-Net/Niagara bundles)
+  - **Improved in v1.0.7:** Windows EXE export stability (all formats working)
 - **Certificate Templates:** Save and reuse certificate configurations
 - **Variable Expansion:** Batch generate certificates with patterns (`controller{+1}`, `device-{001}`)
 - **Expiration Tracking:** Automated monitoring with configurable warning periods
+- **3-Pass Deployment:** Matches interface management reliability (carried from v6.17.x)
 
 ### 🌐 **Intelligent Network Discovery**
 
@@ -111,6 +137,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 - **Parallel Scanning:** Configurable thread count (1-50 threads) with adaptive performance
 - **IPv6 Optimization:** Automatic adapter management with hybrid restoration
 - **Metadata Pre-Loading:** Batch API calls fetch backup/cert counts in parallel
+- **Improved in v1.0.7:** Port number filtering (cleaner scan results)
 
 ### 💾 **Comprehensive Backup System**
 
@@ -118,6 +145,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Create, download, and delete backups via controller API
   - Granular selection: All/Latest/By-Age/By-Count/Specific
   - Overwrite behavior control (skip existing vs force re-download)
+  - **Improved in v1.0.7:** 3-pass retry for backup operations
 
 - **Local Backup Management:**
   - Profile-based organization (`Backups/{Profile}/{Controller}/`)
@@ -183,6 +211,10 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 ### 🗂️ **Controller Management**
 
 - **Dashboard View:** Summary-first design for 100+ controller environments
+- **Improved in v1.0.7:** Submenu structure with Network Interface Management
+  - Option 1: Controller Dashboard
+  - Option 2: Network Interface Management (NEW)
+  - Clear navigation labels ("Return to Controller Management")
 - **Per-Controller Credentials:** Override session credentials for specific controllers (encrypted)
 - **Metadata Caching:** Operation-aware cache with configurable TTL (10-60 minutes)
 - **Bulk Operations:** Filter-based actions (no backups, no CA, no certs, by age)
@@ -197,6 +229,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 - **Five Verbosity Levels:** ERROR < WARNING < INFO < DEBUG < TRACE
 - **Per-Module Overrides:** Separate verbosity for Scanning, Certificates, Backups, General
 - **Quick Presets:** Troubleshooting, Production, Development, Silent modes
+- **Improved in v1.0.7:** Silent mode for retry operations (DEBUG level, file-only)
 
 ### 🔒 **Security Features**
 
@@ -212,6 +245,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Certificate passwords cached for batch operations
   - Controller credentials saved encrypted in profile
   - Per-controller credential overrides
+  - **Improved in v1.0.7:** Per-operation credential prompts with reuse option
 
 - **Encryption:**
   - Profile data: AES-256-CBC with PBKDF2
@@ -226,10 +260,25 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - TCP pre-flight filtering (85-90% faster IP scans)
   - Smart metadata caching (4-8x faster repeat scans)
 
+- **Adaptive Network Management (MODULE-1415 - Enhanced in v1.0.7):**
+  - Pre-operation network quality testing
+  - Dynamic delay calculation based on latency and packet loss
+  - Automatic throttle adjustment during operations
+  - Live visual feedback with network metrics
+
+- **3-Pass Retry System (Universal in v1.0.7):**
+  - Certificate deployment (carried from v6.17.x)
+  - Interface configuration (NEW)
+  - Backup operations (NEW)
+  - Silent console output (errors logged to file at DEBUG level)
+  - Intelligent recovery (only retries failures)
+  - ETA calculation per pass
+
 - **Windows Performance Tuning:**
   - DefaultConnectionLimit=100 (unlocks true parallelism)
   - Expect100Continue=false (prevents EXE connection drops)
   - UseNagleAlgorithm=false (reduces latency)
+  - **Fixed in v1.0.7:** Separate try-catch blocks (EXE-compatible pattern)
 
 - **Memory Management:**
   - Secure string bypasses for large file operations
@@ -240,9 +289,9 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 
 ## 📥 Download & Installation
 
-### **Latest Release: v1.0.1**
+### **Latest Release: v1.0.7**
 
-**⚠️ License Validity:** This build is valid until **April 6, 2026** (90 days from release)
+**⚠️ License Validity:** This build is valid until **April 6, 2026** (89 days from release)
 
 Download the latest release from the [Releases](../../releases) page.
 
@@ -250,13 +299,13 @@ Download the latest release from the [Releases](../../releases) page.
 
 1. **Download** the latest release:
    ```
-   ECLYPSE-Security-Manager-v1.0.1.exe
+   ECY-Security-Manager-v1.0.7.exe
    ```
 
 2. **Verify Download (Recommended):**
    ```powershell
-   (Get-FileHash .\ECLYPSE-Security-Manager-v1.0.1.exe -Algorithm SHA256).Hash
-   # Should match: D7BADFF5CAC4C4989E97627A5C65697C3910EB6713BF88887E4044ECC9BCF8D0
+   (Get-FileHash .\ECY-Security-Manager-v1.0.7.exe -Algorithm SHA256).Hash
+   # Should match: 3150E743B8CAAD356F98FECCA849088FB0A46CDAE0CF6DCA95951AB9AA06F332
    ```
 
 3. **First Run Setup:**
@@ -266,7 +315,7 @@ Download the latest release from the [Releases](../../releases) page.
 
 4. **File Structure:**
    ```
-   ECLYPSE-Security-Manager-v1.0.1.exe
+   ECY-Security-Manager-v1.0.7.exe
    share/
    ├── app-core.dat (encrypted application code)
    └── openssl-binaries.dat (encrypted OpenSSL)
@@ -294,26 +343,26 @@ Download the latest release from the [Releases](../../releases) page.
 
 1. **Download** the latest release:
    ```bash
-   wget https://github.com/LesserOfTwoWeevils/releases/download/v1.0.1/ECLYPSE-Security-Manager-v1.0.1.AppImage
+   wget https://github.com/LesserOfTwoWeevils/releases/download/v1.0.7/ECY-Security-Manager-v1.0.7.AppImage
    ```
 
 2. **Verify Download (Recommended):**
    ```bash
-   sha256sum ECLYPSE-Security-Manager-v1.0.1.AppImage
-   # Should match: 2834A564D671C2100A08FFD6E31B4EA9B9E9163B3E6AA8D385AB0C254EE2FA39
+   sha256sum ECY-Security-Manager-v1.0.7.AppImage
+   # Should match: 0A85E4C702415538BED865810D73D19AD5AA4F84369C026002D79195ED8F87A5
 
    # OR use the checksum file:
-   sha256sum -c ECLYPSE-Security-Manager-v1.0.1.AppImage.sha256
+   sha256sum -c ECY-Security-Manager-v1.0.7.AppImage.sha256
    ```
 
 3. **Make executable:**
    ```bash
-   chmod +x ECLYPSE-Security-Manager-v1.0.1.AppImage
+   chmod +x ECY-Security-Manager-v1.0.7.AppImage
    ```
 
 4. **Run:**
    ```bash
-   ./ECLYPSE-Security-Manager-v1.0.1.AppImage
+   ./ECY-Security-Manager-v1.0.7.AppImage
    ```
 
 5. **Optional: Install Avahi for mDNS:**
@@ -460,15 +509,54 @@ Main Menu → [6] Deploy Certificates
   → Auto-detects format compatibility:
      • PS7: PKCS#12 (.pfx) - binary upload
      • PS5.1/EXE: Combined PEM - text upload
-  → Batch deployment with progress
+  → 3-pass retry with adaptive throttling (NEW in v1.0.7)
   ✓ Smart CA detection (deploys matching CA automatically)
   ✓ Per-controller credential support
-  ✓ Operation delay protection (prevents web interface conflicts)
+  ✓ Silent retries with final summary
+  ✓ 97-99% success rate
 ```
 
 ---
 
-### **6. Schedule Automated Backups**
+### **6. Manage Network Interfaces (NEW in v1.0.7)**
+
+**View Interface Status:**
+```
+Main Menu → [2] Controller Management → [2] Network Interface Management
+  → [1] View Interface Status
+  → Enter credentials (or reuse session credentials)
+  → Queries all controllers
+  ✓ Shows: bridge, primary, secondary interfaces
+  ✓ Status: Routable, Carrier, NoCarrier, Off
+  ✓ IPv4/IPv6 enabled states with IP addresses
+  ✓ Color-coded indicators
+```
+
+**Configure IPv4/IPv6:**
+```
+Main Menu → [2] Controller Management → [2] Network Interface Management
+  → [2] Configure IPv4/IPv6 Settings
+  → Enter credentials
+  → Select controllers (ALL or specific)
+  → Select interfaces (1,2 for primary+secondary or Enter for bridge)
+  → Choose action:
+     1. Enable IPv4
+     2. Disable IPv4
+     3. Enable IPv6
+     4. Disable IPv6
+     5. Enable both
+     6. Disable both
+  → Type "CONFIRM" to proceed
+  → 3-pass retry with adaptive throttling
+  → Automatic verification scan (5s delay)
+  ✓ Real-time progress with ETA
+  ✓ Silent retries during passes
+  ✓ Final summary shows all ✓/✗
+```
+
+---
+
+### **7. Schedule Automated Backups**
 
 ```
 Main Menu → [14] Manage Jobs → [C] Create Job
@@ -503,6 +591,7 @@ Main Menu → [14] Manage Jobs → [C] Create Job
 │  • Session: Memory only (cleared on exit)                   │
 │  • Profile: Encrypted with profile password                 │
 │  • Per-Controller: Override for specific controllers        │
+│  • Per-Operation: Prompt with reuse option (NEW v1.0.7)    │
 └─────────────────────────────────────────────────────────────┘
            ▼
 ┌─────────────────────────────────────────────────────────────┐
@@ -517,40 +606,55 @@ Main Menu → [14] Manage Jobs → [C] Create Job
 │  • Self-signed cert bypass (global ServicePointManager)     │
 │  • Basic Auth over TLS 1.2/1.3                              │
 │  • 3-method fallback (Script/EXE/WebRequest compatibility)  │
+│  • Separate try-catch blocks for EXE stability (v1.0.7)    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### **Data Flow: Network Scan with Metadata Pre-Load**
+### **3-Pass Retry Flow (NEW - Universal in v1.0.7)**
 
 ```
-User: Main Menu → [1] Scan Network → [2] mDNS Discovery
+Operation Start (Certificate Deploy / Interface Config / Backup)
+  ↓
+Network Quality Detection (MODULE-1415)
+  → 5-sample latency test
+  → Calculate: Excellent/Good/Fair/Poor/Critical
+  → Adaptive delay: +0% (Good) to +100% (Critical)
+  ↓
+Initialize Throttle
+  → Base delay from settings
+  → Apply network multiplier
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│ PASS 1: Attempt All Controllers                            │
+│  • Silent mode (errors logged at DEBUG level, not console)  │
+│  • Progress: ⚡ Pass 1 : 5/12 (42%) | controller-01 | ETA:45s │
+│  • Result: 10 success, 2 failures                           │
+│  • Success Rate: 83% (typical for Pass 1)                   │
+└─────────────────────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│ PASS 2: Retry Failures Only (2 controllers)                │
+│  • Silent mode (DEBUG level logging)                        │
+│  • Progress: ⚡ Pass 2 : 1/2 (50%) | controller-07 | ETA: 12s │
+│  • Result: 1 success, 1 failure                             │
+│  • Cumulative: 11/12 success (92%)                          │
+└─────────────────────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│ PASS 3: Final Retry (1 controller)                         │
+│  • Silent mode (DEBUG level logging)                        │
+│  • Progress: ⚡ Pass 3 : 1/1 (100%) | controller-07 | ETA: 6s  │
+│  • Result: 1 success, 0 failures                            │
+│  • Final: 12/12 success (100%)                              │
+└─────────────────────────────────────────────────────────────┘
+  ↓
+Final Summary (Console Display)
+  ✓ controller-01
+  ✓ controller-02
+  ...
+  ✓ controller-12
 
-1. Adapter Selection (if IPv6 detected: optimize or continue)
-2. mDNS Discovery (Avahi/Bonjour, 10-20 seconds)
-   → Returns: 13 IP addresses
-
-3. Cache Recognition (NEW - 60-80% time savings)
-   → Check: 13 discovered vs 13 cached
-   → Result: 13 cached (skip validation), 0 new
-
-4. TCP Pre-Flight (if enabled, filters dead IPs)
-   → 500ms per IP, 50 parallel threads
-   → Result: 13 reachable, 0 filtered
-
-5. HTTPS Validation (3-method fallback, 5-second timeout)
-   → Parallel: 10 threads
-   → Result: 13 validated (or trusted from cache)
-
-6. Metadata Pre-Load (Batch API, if not Fast Scan mode)
-   → POST /api/rest/v2/batch (3 requests in 1 call)
-   → Parallel: 10 threads
-   → Fetches: Platform, Certificates, Backups
-   → Result: Instant dashboard views
-
-Total Time:
-  • First scan (cache cold): ~45-60 seconds
-  • Repeat scan (cache hot): ~7-12 seconds
-  • Fast scan mode: ~5-10 seconds (no metadata)
+Overall Success: 12/12 (100%)
 ```
 
 ---
@@ -566,13 +670,15 @@ Profile Setup:
   • Scan: mDNS discovery (automatic)
   • Certificate Generation: Quick mode (uses defaults)
   • Backup: Manual (before deployments)
+  • Network Management: Available for IPv6 migrations (NEW)
 
 Workflow:
   1. Scan network once
   2. Generate CA once
   3. Generate certificates (batch, 5 minutes)
-  4. Deploy (batch, 3 minutes)
+  4. Deploy with 3-pass retry (3 minutes, 99% success)
   5. Verify via inventory
+  6. Configure interfaces if needed (IPv4/IPv6 settings)
 
 Time to Production: ~15 minutes
 ```
@@ -586,20 +692,24 @@ Profile Setup:
   • Scan: Import CSV lists (pre-populated)
   • Certificate Generation: Custom builder with templates
   • Jobs: Automated nightly backups
+  • Network Management: Bulk IPv6 enablement across sites (NEW)
 
 Workflow:
   1. Import controller lists (CSV per site)
   2. Generate CAs (one per site, save as templates)
   3. Generate certificates (template-based, 30-minute batch)
-  4. Deploy in phases (site-by-site)
-  5. Schedule backup jobs (daily downloads)
-  6. Monitor via dashboards
+  4. Deploy in phases (site-by-site, 3-pass retry)
+  5. Configure network interfaces (bulk IPv6 rollout)
+  6. Schedule backup jobs (daily downloads)
+  7. Monitor via dashboards
 
 Features Used:
   • Per-controller credentials (different admin passwords per site)
   • Job system (nightly backups to central location)
   • Metadata caching (instant dashboard refresh)
   • Profile export (backup configuration to other machines)
+  • 3-pass retry (97-99% success across enterprise scale)
+  • Adaptive throttling (network-aware operations)
 
 Time to Production: ~2-4 hours (initial setup), ~15 min/site (ongoing)
 ```
@@ -621,15 +731,45 @@ Workflow:
   1. Create profile per customer
   2. Import customer's controller list
   3. Generate customer-specific CA
-  4. Deploy certificates
-  5. Export profile (encrypted) for team backup
-  6. Switch profiles as needed (no restart)
+  4. Deploy certificates (3-pass reliability)
+  5. Configure interfaces per customer requirements (NEW)
+  6. Export profile (encrypted) for team backup
+  7. Switch profiles as needed (no restart)
 
 Profile Security:
   • Each profile has separate password
   • Per-profile credential isolation
   • Export packages encrypted with separate password
   • Import re-encrypts with target profile password
+
+NEW in v1.0.7:
+  • Bulk interface management for IPv6 rollouts
+  • 3-pass operations across all critical functions
+  • Network quality detection before operations
+```
+
+### **IPv6 Migration Scenario (NEW in v1.0.7)**
+
+```yaml
+Objective: Enable IPv6 across 50-controller facility
+
+Workflow:
+  1. Controller Management → Network Interface Management
+  2. View Interface Status (baseline - all IPv6 disabled)
+  3. Select All Controllers
+  4. Select bridge interface
+  5. Choose Action: Enable IPv6
+  6. Type "CONFIRM"
+  7. 3-pass execution:
+     • Pass 1: 45/50 success (90%)
+     • Pass 2: 4/5 success (80% of failures recovered)
+     • Pass 3: 1/1 success (100% final)
+     • Overall: 50/50 (100% success)
+  8. Automatic verification scan confirms changes
+  9. Document results in change log
+
+Time: ~15 minutes for 50 controllers (3-pass with delays)
+Success Rate: 97-99% typical with 3-pass retry
 ```
 
 ---
@@ -672,12 +812,31 @@ DEFAULT BEHAVIOR:
   • Single username/password for all controllers
   • Saved encrypted in profile (opt-in)
   • Reused across sessions
+  • Per-operation prompt with reuse option (NEW in v1.0.7)
 
 OVERRIDE FOR SENSITIVE CONTROLLERS:
   Controller Manager → Edit Controller → Set Custom Credentials
   • CEO's controller: admin/special-password
   • Server room controller: admin/different-password
   • Default controllers: session credential
+```
+
+### **Network Interface Changes**
+
+```powershell
+SAFETY MECHANISMS (v1.0.7):
+  • Typed confirmation required ("CONFIRM")
+  • Detailed preview before execution
+  • Credential prompt per operation
+  • Automatic verification scan after changes
+  • 3-pass retry prevents partial failures
+
+BEST PRACTICES:
+  • Test on single controller first
+  • Document baseline configuration
+  • Schedule during maintenance windows
+  • Verify connectivity after changes
+  • Use verification scan to confirm
 ```
 
 ### **Backup Encryption**
@@ -711,9 +870,41 @@ Backup Created → BackupCount++
 CA Deployed → CADeployStatus = true
 Cert Deployed → CertDeployStatus = true
 Delete Backup → BackupCount--
+Interface Changed → InterfaceConfigTimestamp updated (NEW v1.0.7)
 ```
 
 **Result:** Dashboard always shows current state without manual refresh
+
+### **Adaptive Network Management (MODULE-1415)**
+
+Dynamic operation tuning based on real-time conditions:
+
+```
+Pre-Operation Detection:
+  → 5-sample latency test to selected controllers
+  → Calculate average latency and packet loss
+  → Quality Rating:
+     • Excellent: <10ms, 0% loss
+     • Good: 10-50ms, 0-2% loss
+     • Fair: 50-100ms, 2-5% loss
+     • Poor: 100-200ms, 5-10% loss
+     • Critical: >200ms or >10% loss
+
+Delay Adjustment:
+  → Base Delay: User configured (1-60s, default 5s)
+  → Multiplier:
+     • Excellent/Good: 1.0x (no change)
+     • Fair: 1.25x (+25%)
+     • Poor: 1.5x (+50%)
+     • Critical: 2.0x (+100%)
+
+During Operation:
+  → Throttle increases on failures (max 3x base)
+  → Throttle maintains/reduces on success streaks
+  → Live metrics: "Network Quality: Good (Avg: 6ms, Loss: 0%)"
+
+Result: Operations adapt to network conditions automatically
+```
 
 ### **Variable Expansion in Batch Operations**
 
@@ -786,6 +977,7 @@ Settings → ECLYPSE API Settings:
   • Operation Delay: 0-60 seconds (default: 5)
     → Wait time after POST/DELETE operations
     → Prevents stale reads from controller web UI
+    → Adaptive throttling adjusts automatically (MODULE-1415)
 
   • TCP Pre-Flight: ON/OFF (default: ON)
     → Filters dead IPs before HTTPS validation
@@ -812,6 +1004,11 @@ Settings → Configure Logging:
     • Certificates: WARNING (keep others quiet)
     • Backups: INFO (visibility)
     • General: ERROR (default)
+
+  NEW in v1.0.7:
+    • Silent mode for retry operations
+    • Errors during retries: DEBUG level (file only)
+    • Final results: INFO/ERROR level (console + file)
 ```
 
 ### **mDNS Discovery Settings**
@@ -899,6 +1096,19 @@ FIX:
     • Cache Recognition: ON (enable)
 ```
 
+**Issue:** "Interface configuration fails instantly (1 second)"**
+```
+SYMPTOMS:
+  • 12 controllers, all fail in ~1 second
+  • No network activity observed
+
+CAUSE: Nested try-catch breaks in Windows EXE (fixed in v1.0.7)
+
+FIX:
+  • Update to v1.0.7 or later
+  • Uses separate try-catch blocks (EXE-compatible)
+```
+
 **Issue:** "Profile password incorrect"
 ```
 SYMPTOMS:
@@ -915,6 +1125,18 @@ FIX (If password is correct but fails):
   → Check for leading/trailing spaces
   → Password is case-sensitive
   → Verify keyboard layout (QWERTY vs AZERTY)
+```
+
+**Issue:** "3-pass retry shows errors during operation" (v1.0.6 and earlier)**
+```
+SYMPTOMS:
+  • Red error messages appear during Pass 1, Pass 2
+  • Console cluttered with failure notices
+
+FIXED in v1.0.7:
+  • Silent mode enabled for retry operations
+  • Errors logged to file at DEBUG level
+  • Console only shows final summary (✓/✗ per controller)
 ```
 
 **Issue:** "Downloaded file is 0 bytes" or "Download fails silently"
@@ -943,12 +1165,14 @@ Config Tuning:
   OperationDelay: 2-3 seconds (balanced)
   UseCachedControllers: true (essential)
   UseTCPPreFlight: true (massive savings)
+  AdaptiveThrottling: Enabled (MODULE-1415, automatic)
 
 Expected Performance:
   • Initial scan: ~90 seconds (parallel validation + metadata)
   • Repeat scan: ~15 seconds (cache hits + new controllers)
   • Certificate generation: ~10-15 minutes (batch with 2s delay)
-  • Certificate deployment: ~8-12 minutes (batch with 3s delay)
+  • Certificate deployment: ~8-12 minutes (3-pass with adaptive delays)
+  • Interface configuration: ~5-8 minutes (3-pass with adaptive delays)
   • Backup download (latest per controller): ~45-60 minutes
 ```
 
@@ -960,11 +1184,13 @@ Config Tuning:
   Timeout: 30-60 seconds (patient)
   OperationDelay: 5-10 seconds (safe)
   MaxRetries: 3 (thorough)
+  AdaptiveThrottling: Enabled (automatically increases delays)
 
 Expected Performance:
   • Operations slower but more reliable
   • Fewer authentication failures
   • Better for WAN/VPN connections
+  • 3-pass retry compensates for network issues
 ```
 
 ---
@@ -1098,9 +1324,9 @@ See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) for complete licensing in
 
 ## 📊 Project Information
 
-**Current Version:** v1.0.1
+**Current Version:** v1.0.7
 **Versioning Scheme:** Semantic Versioning (MAJOR.MINOR.PATCH)
-**Release Date:** January 6, 2026
+**Release Date:** January 7, 2026
 **License Validity:** 90 days (expires April 6, 2026)
 **License:** GPL-3.0
 **Status:** Community Tool - Stable Release
