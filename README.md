@@ -115,7 +115,6 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Task status: Enabled/disabled state with visual indicators
   - Action details: HTTP method, endpoint URLs
   - Execution history: Last status (Success/Failed) with timestamps
-  - Trigger and recipient associations
 
 - **Task Expiration with Self-Cleanup:**
   - Creates expiration task that deletes main task AND itself
