@@ -37,7 +37,7 @@ This application is:
 
 ## 🔄 Semantic Versioning Adoption
 
-**Version Numbering:** v6.17.399b → v1.0.1 → v1.0.7 → v1.0.8 → v1.0.9 → v1.0.10
+**Version Numbering:** v6.17.399b → v1.0.1 → v1.0.7 → v1.0.8 → v1.0.9 → v1.0.10 → v1.0.11
 
 We've transitioned from development versioning (6.x.x) to **semantic versioning** for clearer release communication:
 
@@ -45,11 +45,11 @@ We've transitioned from development versioning (6.x.x) to **semantic versioning*
 - **MINOR** (x.1.x): New features, backward compatible
 - **PATCH** (x.x.1): Bug fixes and improvements
 
-**This is NOT a downgrade** - v1.0.10 is **NEWER** than v6.17.399b and includes all features plus Network Interface Management, Event Management, Task Automation, and critical stability fixes. The built-in update checker correctly detects these transitions.
+**This is NOT a downgrade** - v1.0.11 is **NEWER** than v6.17.399b and includes all features plus Network Interface Management, Event Management, Task Automation, and critical stability fixes. The built-in update checker correctly detects these transitions.
 
-**Upgrading from v6.17.x, v1.0.1, v1.0.7, v1.0.8, or v1.0.9?** Your profiles are fully compatible. Just replace the executable/AppImage - no migration needed.
+**Upgrading from v6.17.x, v1.0.1, v1.0.7, v1.0.8, v1.0.9, or v1.0.10?** Your profiles are fully compatible. Just replace the executable/AppImage - no migration needed.
 
-**⚠️ v1.0.9 Users:** v1.0.10 is a **recommended upgrade** - fixes critical task creation bug affecting multi-controller operations.
+**🚨 v1.0.10 Users:** v1.0.11 is a **CRITICAL upgrade** - v1.0.10 has game-breaking bugs that prevent certificate deployment, single-controller scanning, interface management, and profile exports from working.
 
 ---
 
@@ -94,45 +94,29 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 
 ## ✨ Key Features
 
-### 📬 **Event Management (Stabilized in v1.0.10)**
+### 🔐 **Advanced Certificate Management (Fixed in v1.0.11)**
 
-- **Recipient Management:** View and delete MQTT, Email, and Webhook recipients
-  - Parallel querying across all controllers
-  - Intelligent deduplication across controllers
+- **Multi-CA Architecture:** Manage multiple Certificate Authorities simultaneously with intelligent selection
+- **Certificate Deployment:** **Now works reliably** - v1.0.11 fixes parameter error that broke all deployments in v1.0.10
+- **Custom Certificate Builder:** 8-step wizard with full control over extensions, SANs, and key usage
+- **CSR Workflow:** Generate Certificate Signing Requests for external CA signing with automatic import matching
+- **16 Export Formats:** PKCS#12, PEM, DER, JKS, PKCS#8, and specialized formats (EC-Net/Niagara bundles)
+- **Certificate Templates:** Save and reuse certificate configurations
+- **Variable Expansion:** Batch generate certificates with patterns (`controller{+1}`, `device-{001}`)
+- **Expiration Tracking:** Automated monitoring with configurable warning periods
+- **3-Pass Deployment:** 97-99% success rates across all controllers
 
-- **Task Management:** View, create, and delete scheduled tasks and automation
-  - **Task Creation (v1.0.9, Fixed in v1.0.10):** 8-step wizard for scheduled controller reboots
-    - **Now works reliably with multiple controllers** (fixed JSON serialization bug)
-    - Guided cron expression builder (Hourly, Daily, Weekly, Monthly, Custom)
-    - **Corrected day-of-week numbering** (1=Monday through 7=Sunday)
-    - Frequency enforcement (minimum 1-hour interval)
-    - Optional task expiration with automatic self-cleanup
-    - Recipient override capability
-    - Parallel task creation across multiple controllers with 97-99% success rate
-  - **Multi-Task Deletion (v1.0.9):** Delete multiple tasks at once
-    - Single selection: `1`
-    - Range selection: `1-3`
-    - List selection: `1,3,5`
-    - Automatic duplicate removal
-  - Task status: Enabled/disabled state with visual indicators
-  - Action details: HTTP method, endpoint URLs
-  - Execution history: Last status (Success/Failed) with timestamps
+### 🌐 **Intelligent Network Discovery (Fixed in v1.0.11)**
 
-- **Task Expiration with Self-Cleanup:**
-  - Creates expiration task that deletes main task AND itself
-  - Uses batch API: `POST /api/rest/v2/batch`
-  - Dual DELETE operations in escaped JSON body
-  - Single trigger execution removes both tasks automatically
-  - No manual cleanup required
+- **Single-Controller Scanning:** **Now works correctly** - v1.0.11 fixes "not found" error when scanning exactly 1 controller
+- **Hybrid mDNS:** Avahi (Linux), Bonjour (Windows), and native .NET fallback
+- **Smart Caching:** Skip validation for recently-scanned controllers (60-80% faster repeat scans)
+- **TCP Pre-Flight:** Filter dead IPs before HTTPS validation (saves 4.5s per dead IP)
+- **Parallel Scanning:** Configurable thread count (1-50 threads) with adaptive performance
+- **IPv6 Optimization:** Automatic adapter management with hybrid restoration
+- **Metadata Pre-Loading:** Batch API calls fetch backup/cert counts in parallel
 
-- **Batch Deletion Operations:**
-  - Parallel scanning to identify unique items
-  - Controller count display (e.g., "Found on: 8/12 controllers")
-  - Typed confirmation for safety ("DELETE" required)
-  - 3-pass retry with adaptive throttling
-  - Smart verification: Items not found = success (desired state)
-
-### 🌐 **Network Interface Management (v1.0.7)**
+### 🌐 **Network Interface Management (Fixed in v1.0.11)**
 
 - **View Interface Status:** Real-time IPv4/IPv6 configuration monitoring
   - Bridge, primary, secondary interface support
@@ -140,7 +124,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - IP address display with color-coded status indicators
   - Bulk queries across all controllers
 
-- **Configure IPv4/IPv6 Settings:** Batch operations with enterprise reliability
+- **Configure IPv4/IPv6 Settings:** **No longer crashes mid-batch** - v1.0.11 fixes array-to-boolean conversion error
   - 6 action options: Enable/disable IPv4, IPv6, or both
   - Multi-interface selection (comma-separated: "1,2" for primary+secondary)
   - Typed confirmation for safety ("CONFIRM" required)
@@ -151,8 +135,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Pass 2: Retry failures from Pass 1
   - Pass 3: Final retry for persistent failures
   - **Result:** 97-99% success rate vs 85-90% single-pass
-  - Silent retries with final summary (✓/✗ per controller)
-  - Real-time progress: `⚡ Pass 2 : 5/10 (50%) | controller-01 | ETA: 45s`
+  - **Now stable:** No more mid-batch crashes
 
 - **Adaptive Network Integration:** Dynamic operation tuning
   - Pre-operation network quality detection (5-sample latency test)
@@ -160,26 +143,52 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Automatic throttle increases on failures (reliability over speed)
   - Live metrics: Avg latency, packet loss %, quality badge
 
-### 🔐 **Advanced Certificate Management (Export Fixed in v1.0.10)**
+### 📬 **Event Management (Stabilized in v1.0.10)**
 
-- **Multi-CA Architecture:** Manage multiple Certificate Authorities simultaneously with intelligent selection
-- **Custom Certificate Builder:** 8-step wizard with full control over extensions, SANs, and key usage
-- **CSR Workflow:** Generate Certificate Signing Requests for external CA signing with automatic import matching
-- **16 Export Formats:** PKCS#12, PEM, DER, JKS, PKCS#8, and specialized formats (EC-Net/Niagara bundles) - **all formats now working reliably**
-- **Certificate Templates:** Save and reuse certificate configurations
-- **Variable Expansion:** Batch generate certificates with patterns (`controller{+1}`, `device-{001}`)
-- **Expiration Tracking:** Automated monitoring with configurable warning periods
-- **Remote Certificate Viewing by Group:** **Fixed filtering logic in v1.0.10** - now displays accurate results
-- **3-Pass Deployment:** Matches interface management reliability
+- **Recipient Management:** View and delete MQTT, Email, and Webhook recipients
+  - Parallel querying across all controllers
+  - Intelligent deduplication across controllers
 
-### 🌐 **Intelligent Network Discovery**
+- **Task Management:** View, create, and delete scheduled tasks
+  - **Task Creation:** 8-step wizard for scheduled controller reboots
+    - Works reliably with multiple controllers (fixed in v1.0.10)
+    - Guided cron expression builder (Hourly, Daily, Weekly, Monthly, Custom)
+    - Corrected day-of-week numbering (1=Monday through 7=Sunday)
+    - Frequency enforcement (minimum 1-hour interval)
+    - Optional task expiration with automatic self-cleanup
+    - Recipient override capability
+    - Parallel task creation with 97-99% success rate
+  - **Multi-Task Deletion:** Delete multiple tasks at once
+    - Single: `1`, Range: `1-3`, List: `1,3,5`
+  - Execution history with status tracking
 
-- **Hybrid mDNS:** Avahi (Linux), Bonjour (Windows), and native .NET fallback
-- **Smart Caching:** Skip validation for recently-scanned controllers (60-80% faster repeat scans)
-- **TCP Pre-Flight:** Filter dead IPs before HTTPS validation (saves 4.5s per dead IP)
-- **Parallel Scanning:** Configurable thread count (1-50 threads) with adaptive performance
-- **IPv6 Optimization:** Automatic adapter management with hybrid restoration
-- **Metadata Pre-Loading:** Batch API calls fetch backup/cert counts in parallel
+- **Task Expiration:** Self-cleanup via batch API
+  - Automatic deletion of main task and expiration task
+  - No manual cleanup required
+
+### 👤 **Profile & Session Management (Fixed in v1.0.11)**
+
+- **Profile Export/Import:** **No longer hangs** - v1.0.11 fixes infinite hang when exporting large CA certificates
+  - Portable encrypted packages with integrity validation
+  - HMAC-SHA256 signature + SHA256 per-file checksums
+  - Selective component inclusion (CAs, certificates, backups, job templates)
+  - Cross-profile security (re-encryption with target password)
+  - Comprehensive audit logging
+
+- **Encrypted Profiles:**
+  - AES-256-CBC with PBKDF2 key derivation (10,000 iterations)
+  - Per-profile password protection
+  - Controller lists, CAs, jobs, and settings stored encrypted
+
+- **Session Management:**
+  - Configurable timeout with lock/logout actions
+  - Operation protection (suspend timeout during backups/scans)
+  - Warning countdown (2-minute alert before timeout)
+
+- **Profile Locking:**
+  - Multi-instance protection with stale detection
+  - Process ID tracking (crash recovery)
+  - Automatic lock file cleanup
 
 ### 💾 **Comprehensive Backup System**
 
@@ -196,32 +205,6 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Automated retention policies
 
 - **Backup Dashboard:** Real-time status with coverage metrics and bar chart visualization
-
-### 👤 **Profile & Session Management**
-
-- **Encrypted Profiles:**
-  - AES-256-CBC with PBKDF2 key derivation (10,000 iterations)
-  - Per-profile password protection (separate from session credentials)
-  - Controller lists, CAs, jobs, and settings stored encrypted
-
-- **Profile Export/Import:**
-  - Portable encrypted packages with integrity validation
-  - HMAC-SHA256 signature + SHA256 per-file checksums
-  - Selective component inclusion (CAs, certificates, backups, job templates)
-  - Cross-profile security (re-encryption with target password)
-  - Comprehensive audit logging
-
-- **Session Management:**
-  - Configurable timeout with lock/logout actions
-  - Operation protection (suspend timeout during backups/scans)
-  - Warning countdown (2-minute alert before timeout)
-  - Inactivity tracking with automatic reset
-
-- **Profile Locking:**
-  - Multi-instance protection with stale detection
-  - Process ID tracking (crash recovery)
-  - Automatic lock file cleanup
-  - Override options for legitimate concurrent access
 
 ### ⚙️ **Background Job System**
 
@@ -256,8 +239,7 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 - **Submenu Structure:**
   - Option 1: Controller Dashboard
   - Option 2: Network Interface Management
-  - Option 3: Event Management (Task Creation stabilized in v1.0.10)
-  - Clear navigation labels
+  - Option 3: Event Management
 - **Per-Controller Credentials:** Override session credentials for specific controllers (encrypted)
 - **Metadata Caching:** Operation-aware cache with configurable TTL (10-60 minutes)
 - **Bulk Operations:** Filter-based actions (no backups, no CA, no certs, by age)
@@ -272,28 +254,6 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
 - **Five Verbosity Levels:** ERROR < WARNING < INFO < DEBUG < TRACE
 - **Per-Module Overrides:** Separate verbosity for Scanning, Certificates, Backups, General, Events
 - **Quick Presets:** Troubleshooting, Production, Development, Silent modes
-- **Silent Mode:** Retry operations log at DEBUG level (file-only)
-
-### 🔒 **Security Features**
-
-- **Licensing System:**
-  - Time-limited builds (30/60/90/180/365 day validity)
-  - Password-protected licenses (optional)
-  - CA-signed certificates with signature validation
-  - Embedded license PFX in compiled binaries
-  - Expiration enforcement with countdown warnings
-
-- **Credential Management:**
-  - 3-tier storage (session/profile/don't save)
-  - Certificate passwords cached for batch operations
-  - Controller credentials saved encrypted in profile
-  - Per-controller credential overrides
-  - Per-operation credential prompts with reuse option
-
-- **Encryption:**
-  - Profile data: AES-256-CBC with PBKDF2
-  - Backup files: Optional AES-256 encryption
-  - Private keys: Always encrypted (AES-256 or PKCS#8)
 
 ### 🚀 **Performance Optimizations**
 
@@ -309,40 +269,55 @@ ECLYPSE Security Manager is a **complete PKI and network management solution** d
   - Automatic throttle adjustment during operations
   - Live visual feedback with network metrics
 
-- **3-Pass Retry System (Universal):**
-  - Certificate deployment
-  - Interface configuration
+- **3-Pass Retry System (Universal - Stable in v1.0.11):**
+  - Certificate deployment (fixed parameter error)
+  - Interface configuration (fixed array-to-boolean crash)
   - Event management
-  - Task creation (**now achieving 97-99% success with multiple controllers**)
+  - Task creation (97-99% success with multiple controllers)
   - Backup operations
   - Silent console output (errors logged to file at DEBUG level)
-  - Intelligent recovery (only retries failures)
-  - ETA calculation per pass
 
 - **Windows Performance Tuning:**
   - DefaultConnectionLimit=100 (unlocks true parallelism)
   - Expect100Continue=false (prevents EXE connection drops)
   - UseNagleAlgorithm=false (reduces latency)
 
-- **Memory Management:**
-  - Secure string bypasses for large file operations
-  - Direct binary encryption for backup files (no 64KB limits)
-  - Runspace disposal prevents memory leaks
+### 🔒 **Security Features**
+
+- **Licensing System:**
+  - Time-limited builds (30/60/90/180/365 day validity)
+  - Password-protected licenses (optional)
+  - CA-signed certificates with signature verification
+  - Embedded license PFX in compiled binaries
+  - Expiration enforcement with countdown warnings
+
+- **Credential Management:**
+  - 3-tier storage (session/profile/don't save)
+  - Certificate passwords cached for batch operations
+  - Controller credentials saved encrypted in profile
+  - Per-controller credential overrides
+  - Per-operation credential prompts with reuse option
+
+- **Encryption:**
+  - Profile data: AES-256-CBC with PBKDF2
+  - Backup files: Optional AES-256 encryption
+  - Private keys: Always encrypted (AES-256 or PKCS#8)
+  - **Profile export:** Fixed hang on large files (v1.0.11)
 
 ---
 
 ## 📥 Download & Installation
 
-### **Latest Release: v1.0.10**
+### **Latest Release: v1.0.11**
 
 Download the latest release from the **[Releases](../../releases/latest)** page:
 
-- **Windows:** `ECY-Security-Manager-v1.0.10.exe` (~13 MB)
-- **Linux:** `ECY-Security-Manager-v1.0.10.AppImage` (~78 MB)
+- **Windows:** `ECY-Security-Manager-v1.0.11.exe` (~13 MB)
+- **Linux:** `ECY-Security-Manager-v1.0.11.AppImage` (~78 MB)
 
 **SHA256 Checksums:**
-- **Windows:** `C44B0C1D5765D3999CEAEAABB420BD3450E87FD33120B8CDA99903265C6B4A79`
-- **Linux:** `49160F1167D0A578CAE64DBDD50F68293286DF0396DF98BDF5940D877D148016`
+- **Windows:** `AD43643498C47047D2CA106C534C957508CB2CA17C5B158506ED6B8F554BD433`
+- **Linux:** `E0DFFB47545DBEFBD8BB7E45DB04B680598AB55264F0428815F87E1DCC0C8853`
 
 **Each release includes:**
 - Binary files for Windows and Linux
@@ -367,7 +342,7 @@ Download the latest release from the **[Releases](../../releases/latest)** page:
 ### **First Run**
 
 **Windows:**
-- OpenSSL binaries extract to `%APPDATA%\EclypseManager\bin\` on first launch (~5-10 seconds)
+- OpenSSL binaries extract to `%APPDATA%\ECYSecurityManager\bin\` on first launch (~5-10 seconds)
 - Subsequent runs are instant
 
 **Linux:**
@@ -396,6 +371,7 @@ Create a named profile (encrypted with your password) or use temporary mode for 
 - Automatically discovers ECLYPSE controllers on local subnet
 - Works with Avahi (Linux) or Bonjour (Windows)
 - Fast: Typically finds controllers in 20-30 seconds
+- **Fixed in v1.0.11:** Single-controller scanning now works correctly
 
 **Option 2: IP Range Scan**
 - Validates each IP for ECLYPSE API
@@ -428,6 +404,7 @@ Follow the 8-step wizard to create a CA with full control over:
 
 ### **5. Deploy Certificates**
 
+- **Fixed in v1.0.11:** Certificate deployment now works (was broken in v1.0.10)
 - Select controllers (ALL or specific)
 - Choose stores (user-trusted, user-keychain, or both)
 - Auto-detects format compatibility
@@ -442,6 +419,7 @@ Follow the 8-step wizard to create a CA with full control over:
 - Shows IPv4/IPv6 states, IP addresses, operational status
 
 **Configure Settings:**
+- **Fixed in v1.0.11:** No longer crashes mid-batch
 - Select controllers and interfaces
 - Choose action (enable/disable IPv4/IPv6)
 - Typed confirmation for safety
@@ -464,11 +442,9 @@ Follow the 8-step wizard to create a CA with full control over:
 **Cron Builder Options:**
 - Hourly: Minimum 1 hour (e.g., every 2 hours)
 - Daily: Specific time (e.g., 2:00 AM)
-- Weekly: Day and time (e.g., **1=Monday** through **7=Sunday**, corrected in v1.0.10)
+- Weekly: Day and time (e.g., **1=Monday** through **7=Sunday**)
 - Monthly: Day of month and time (e.g., 1st at 3:00 AM)
 - Custom: Manual expression with validation
-
-**⚠️ Note:** v1.0.10 fixes critical bugs that prevented task creation from working with multiple controllers and corrects day-of-week numbering.
 
 ---
 
@@ -479,11 +455,6 @@ Follow the 8-step wizard to create a CA with full control over:
 - Parallel fetching with progress display
 - Grouped by controller with details
 
-**View Certificates by Group (Fixed in v1.0.10):**
-- Accurate group filtering
-- Correct certificate enumeration
-- Improved performance for grouped views
-
 **Delete Items:**
 - Intelligent scanning across controllers
 - Show item prevalence (found on X/Y controllers)
@@ -493,13 +464,13 @@ Follow the 8-step wizard to create a CA with full control over:
 
 ---
 
-### **9. Schedule Automated Backups**
+### **9. Export Profile for Backup**
 
-Create jobs for:
-- Daily backup downloads
-- Remote backup creation
-- Age-based cleanup
-- Local retention enforcement
+- **Fixed in v1.0.11:** Profile export no longer hangs on large CA certificates
+- Portable encrypted packages
+- Integrity validation (HMAC-SHA256)
+- Selective content inclusion
+- Works with profiles containing 50+ certificates and large CAs
 
 ---
 
@@ -517,7 +488,7 @@ Certificate Layer (PKI Operations)
 Transport Layer (HTTPS API)
 ```
 
-### **3-Pass Retry Flow**
+### **3-Pass Retry Flow (Stable in v1.0.11)**
 
 ```
 Operation Start
@@ -539,10 +510,10 @@ Final Summary (Console Display)
 
 ### **Single-Site (1-20 Controllers)**
 - Quick setup: ~15 minutes
-- mDNS discovery
-- Simple certificate generation
+- mDNS discovery (works with 1 or more controllers)
+- Simple certificate generation and deployment
 - Manual or scheduled backups
-- Schedule maintenance reboots (**now works reliably**)
+- Schedule maintenance reboots
 
 ### **Multi-Site Enterprise (100+ Controllers)**
 - Template-based certificate generation
@@ -550,7 +521,7 @@ Final Summary (Console Display)
 - Automated nightly backups
 - Profile export for team sharing
 - Bulk interface management
-- Centralized task automation (**multi-controller now stable**)
+- Centralized task automation
 
 ### **Service Provider / MSP**
 - One profile per customer
@@ -561,12 +532,12 @@ Final Summary (Console Display)
 
 ### **IPv6 Migration**
 - Bulk interface enablement
-- 3-pass reliability
+- 3-pass reliability (no crashes)
 - Automatic verification
-- Typically 97-99% success rate
+- 97-99% success rate
 
 ### **Operations & Maintenance**
-- Scheduled controller reboots (**multi-controller fixed in v1.0.10**)
+- Scheduled controller reboots
 - Time-limited automation tasks
 - Bulk cleanup of expired tasks
 - Event-driven workflows
@@ -576,7 +547,7 @@ Final Summary (Console Display)
 ## 🔐 Security Best Practices
 
 - ✅ Use strong profile passwords (8+ characters)
-- ✅ Export profiles periodically for backup
+- ✅ Export profiles periodically for backup (no longer hangs in v1.0.11)
 - ✅ Store exports in secure location
 - ✅ Use named profiles for production
 - ✅ Test interface changes on single controller first
@@ -593,10 +564,10 @@ Final Summary (Console Display)
 - **Opportunistic Cache Updates:** Operations automatically update controller metadata
 - **Adaptive Network Management:** Dynamic operation tuning based on real-time conditions
 - **Variable Expansion:** Generate hundreds of certificates with patterns
-- **Profile Export/Import:** Team sharing and disaster recovery
+- **Profile Export/Import:** Team sharing and disaster recovery (stable in v1.0.11)
 - **Task Expiration:** Automatic cleanup via batch API
 - **Multi-Selection:** Range and list selection for bulk operations
-- **Correct Cron Scheduling:** Fixed day-of-week numbering in v1.0.10
+- **PS2EXE Reliability:** Fixed array unwrapping issues in v1.0.11
 
 ---
 
@@ -625,32 +596,38 @@ Final Summary (Console Display)
 
 ## 🐛 Troubleshooting
 
+### **Fixed in v1.0.11**
+
+**Certificate Deployment Parameter Error**
+- **Symptom:** Deployment fails immediately with "parameter not found: MaxRetries"
+- **Status:** ✅ **FIXED** in v1.0.11
+- **Was:** Broken in v1.0.10 (100% failure rate)
+- **Now:** Works reliably with 3-pass retry wrapper
+
+**Single-Controller Scan Shows "Not Found"**
+- **Symptom:** Scanning exactly 1 controller shows "No ECLYPSE controllers found" despite finding it
+- **Status:** ✅ **FIXED** in v1.0.11
+- **Was:** PS2EXE array unwrapping issue
+- **Now:** Single-controller scanning works correctly
+
+**Interface Configuration Crashes Mid-Batch**
+- **Symptom:** IPv4/IPv6 operations crash with "Cannot convert System.Object[] to System.Boolean"
+- **Status:** ✅ **FIXED** in v1.0.11
+- **Was:** Array unwrapping through throttle updates
+- **Now:** Interface configuration completes full batch
+
+**Profile Export Hangs Forever**
+- **Symptom:** Export progress freezes at "CA Certificates... (1/1)" and never completes
+- **Status:** ✅ **FIXED** in v1.0.11
+- **Was:** ConvertTo-Json hanging on large CA private keys
+- **Now:** Exports complete in seconds regardless of CA size
+
 ### **Common Issues**
-
-**Task Creation Fails with Multiple Controllers (Fixed in v1.0.10)**
-- **Symptom:** Task creation succeeds with 1 controller but fails with 2+
-- **Cause:** JSON serialization bug in v1.0.9
-- **Solution:** Upgrade to v1.0.10
-
-**Tasks Running on Wrong Day (Fixed in v1.0.10)**
-- **Symptom:** Weekly task runs on different day than expected
-- **Cause:** Incorrect day-of-week numbering in v1.0.9 (0-6 instead of 1-7)
-- **Solution:** Upgrade to v1.0.10 and recreate tasks
-
-**Certificate Export Failures (Fixed in v1.0.10)**
-- **Symptom:** Export produces corrupted or empty files
-- **Cause:** File handle and encoding issues in v1.0.9
-- **Solution:** Upgrade to v1.0.10
-
-**Certificate Viewing by Group Shows Incorrect Results (Fixed in v1.0.10)**
-- **Symptom:** Group filtering displays wrong certificates or fails
-- **Cause:** Filtering logic bug in v1.0.9
-- **Solution:** Upgrade to v1.0.10
 
 **OpenSSL Not Found (Windows)**
 - **Symptom:** "OpenSSL command failed" errors
 - **Cause:** First-run extraction incomplete or blocked
-- **Solution:** Run as admin once to complete extraction, or manually extract to `%APPDATA%\EclypseManager\bin\`
+- **Solution:** Run as admin once to complete extraction, or manually extract to `%APPDATA%\ECYSecurityManager\bin\`
 
 **Authentication Failures During mDNS**
 - **Symptom:** Controllers discovered but validation fails
@@ -665,7 +642,7 @@ Final Summary (Console Display)
 **Profile Password Issues**
 - **Symptom:** Cannot unlock profile
 - **Solution:** Check caps lock, use profile recovery options
-- **Prevention:** Export profile backups regularly
+- **Prevention:** Export profile backups regularly (stable in v1.0.11)
 
 See the detailed troubleshooting section in release notes for additional guidance.
 
@@ -681,7 +658,7 @@ Settings → Check for Updates
   → Offers one-click download with profile backup prompt
 ```
 
-**Automatic detection of v1.0.9 → v1.0.10 upgrades**
+**Automatic detection of v1.0.10 → v1.0.11 upgrades**
 
 ---
 
@@ -775,9 +752,9 @@ See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) for complete licensing in
 
 ## 📊 Project Information
 
-**Current Version:** v1.0.10
+**Current Version:** v1.0.11
 **Versioning Scheme:** Semantic Versioning (MAJOR.MINOR.PATCH)
-**Release Date:** January 14, 2026
+**Release Date:** January 16, 2026
 **License:** GPL-3.0
 **Status:** Community Tool - Stable Release
 **Minimum PowerShell:** 7.0+
@@ -792,7 +769,8 @@ See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) for complete licensing in
 ---
 
 **📝 Version History:**
-- **v1.0.10** (2026-01-14): Bug Fixes - Task Creation, Cron Scheduling, Certificate Operations ⚠️ **Recommended upgrade from v1.0.9**
+- **v1.0.11** (2026-01-16): 🚨 Critical Patch - Deployment, Scanning, Export, Interface Mgmt ⚠️ **Critical upgrade from v1.0.10**
+- **v1.0.10** (2026-01-14): Bug Fixes - Task Creation, Cron Scheduling, Certificate Operations
 - **v1.0.9** (2026-01-12): Task Automation & Multi-Task Management
 - **v1.0.8** (2026-01-08): Event Management & Scheduled Tasks
 - **v1.0.7** (2026-01-07): Network Interface Management + 3-Pass Reliability
@@ -804,12 +782,16 @@ See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) for complete licensing in
 
 ## 🔔 Upgrade Notice
 
-**⚠️ If you're running v1.0.9, upgrade to v1.0.10 immediately.**
+**🚨 If you're running v1.0.10, upgrade to v1.0.11 immediately.**
 
-v1.0.10 fixes:
-- ✅ **CRITICAL:** Task creation with multiple controllers
-- ✅ **IMPORTANT:** Cron day-of-week scheduling errors
-- ✅ **STABILITY:** Certificate export issues across all 16 formats
-- ✅ **RELIABILITY:** Remote certificate viewing by group
+v1.0.11 fixes **4 critical bugs** that make v1.0.10 unusable for core operations:
+- ✅ **Certificate deployment** - Was completely broken (parameter error)
+- ✅ **Single-controller scanning** - Showed "not found" despite finding device
+- ✅ **Interface configuration** - Crashed mid-batch with array conversion error
+- ✅ **Profile export** - Hung forever when exporting large CA certificates
 
 **Upgrade is seamless** - just replace the executable/AppImage. All profiles remain compatible.
+
+---
+
+**⚠️ v1.0.10 is effectively broken for production use. Please upgrade to v1.0.11.**
